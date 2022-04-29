@@ -8,17 +8,18 @@ java built in priority q class.
 import java.util.*;
 import Classes.MergeSort;
 import Classes.Node;
-
 public class App {
+    static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter a sentence: ");
+       
+        String x = encodeInputPrompt();
+        String xCopy = x;
+        x = x.toUpperCase();
 
-        String x = scanner.nextLine().toUpperCase();
-        scanner.close();
-        
         int n = x.length();
         Map<Character, Integer> freq = new HashMap<Character, Integer>();
+        PriorityQueue<Node> nodes = new PriorityQueue<Node>(freq.size(), new MyComparator());
+        myGlobals codes = new myGlobals();
 
         for(int i = 0; i < n; i++){
             if (freq.containsKey(x.charAt(i))){
@@ -27,24 +28,14 @@ public class App {
                 freq.put(x.charAt(i), 1);
             }
         }
-        PriorityQueue<Node> nodes = new PriorityQueue<Node>(freq.size(), new MyComparator());
-        //Node[] nodes = new Node[freq.size()];
-        //int kount = 0; 
+        
         for(Map.Entry<Character, Integer> e : freq.entrySet()){
             char letter = e.getKey();
             int frequency = e.getValue();
             Node temp = new Node(letter, frequency);
             nodes.add(temp);
-            //nodes[kount] = new Node(letter, frequency);
-            //kount++;  
         }
 
-        /* MergeSort sortObjects = new MergeSort();
-        sortObjects.sort(nodes, 0, nodes.length - 1);
-
-        Node[] huffmanNodes = new Node[nodes.length]; */
-        //int j = 0;
-        //Boolean flag = true;
         Node root = null;
         while (nodes.size() > 1){
             Node temp1 = nodes.peek();
@@ -58,35 +49,10 @@ public class App {
             Node temp3 = new Node(s.toString(), z, temp1, temp2);
 
             root = temp3;
-            nodes.add(temp3);
-            /* if (nodes.length == 0){
-                flag = false;
-                break;
-            }
-            Node leftNode = nodes[0];
-            Node rightNode = nodes[1];
-            StringBuilder s = new StringBuilder();
-            s.append(leftNode.getLetter()).append(rightNode.getLetter()).toString(); // + leftNode.getLetter().toString();
-            Node temp = new Node(s.toString(), (leftNode.getFrequency() + rightNode.getFrequency()), leftNode, rightNode);
-
-            leftNode.setHuffSymbol(0);
-            rightNode.setHuffSymbol(1);
-
-            huffmanNodes[j] = temp;
-            j++;
-            if (nodes.length > 2){
-                nodes = removeElement(nodes, 0);
-                nodes = removeElement(nodes, 0);
-            }
-            else{
-                flag = false;
-            } */
-            
+            nodes.add(temp3);        
         }
-        myGlobals codes = new myGlobals();
-        
-        printTree(root, "", codes);
-        System.out.println();
+
+        traverseTree(root, "", codes);
 
         File myFile = new File("HuffmanCodes.txt");
         PrintWriter pw = new PrintWriter(myFile);
@@ -95,22 +61,72 @@ public class App {
             char z = x.charAt(i);
             if (codes.letterCode.containsKey(z)){
                 pw.write(codes.letterCode.get(z));
-                pw.write(" ");
+               // pw.write(" ");
             } 
         }
         pw.close();
+
+        boolean flag = false;
+
+        File myInFile = new File("HuffmanCodes.txt");
+        Scanner in = new Scanner(myInFile);
+
+        String data = "";
+        while (in.hasNextLine()){
+            data = in.nextLine();
+        }
+        in.close();
+
+        while (flag == false){
+            String s = decodeInputPrompt();
+            int ans = Integer.parseInt(s); 
+            switch(ans){
+            case 1:
+                
+                break;
+            case 2: 
+                System.out.println("Encoded Text: " + data);
+                break;
+            case 3: 
+                System.out.println("Original text: " + xCopy);
+                break;
+            default: 
+                System.out.println("Goodbye :)");
+                flag = true;
+                break;
+            }
+        }
+
     }
 
-   public static void printTree(Node root, String s, myGlobals codes){
+    public static String encodeInputPrompt(){
+        System.out.println("\nEnter a sentence: ");
+        String x = scanner.nextLine();
+
+        return x;
+    }
+
+    public static String decodeInputPrompt(){
+        System.out.println("\nPlease select an option");
+        System.out.println("1. Decode the encoded text");
+        System.out.println("2. Display the encoded text");
+        System.out.println("3. Display original text");
+        System.out.println("4. Quit");
+        
+        String s = scanner.nextLine();
+        return s;
+    }
+
+    public static void traverseTree(Node root, String s, myGlobals codes){
         if(root == null) { return; }
         if (root.left == null && root.right == null && Character.isLetter(root.getLetter())) {
             codes.x.add(s);
             codes.letterCode.put(root.getLetter(), s);
-            System.out.println(root.getLetter() + ":" + s);
+            //System.out.println(root.getLetter() + ":" + s);
             return;
         }
-        printTree(root.left, s + "0", codes);
-        printTree(root.right, s + "1", codes); 
+        traverseTree(root.left, s + "0", codes);
+        traverseTree(root.right, s + "1", codes); 
     }
 
     /* Removes an element from an array without creating empty spaces and returns the array */
@@ -127,10 +143,7 @@ public class App {
     }
 }
 class MyComparator implements Comparator<Node> {
-    public int compare(Node x, Node y)
-    {
-        return x.getFrequency() - y.getFrequency();
-    }
+    public int compare(Node x, Node y) { return x.getFrequency() - y.getFrequency(); }
 }
 class myGlobals {
     HashMap<Character, String> letterCode = new HashMap<Character, String>();
