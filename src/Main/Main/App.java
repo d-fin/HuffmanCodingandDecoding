@@ -56,20 +56,33 @@ public class App {
         traverseTree(root, "", codes);
 
         File myFile = new File("HuffmanCodes.txt");
+        File compareFile = new File("TextFile.txt");
+        PrintWriter pw2 = new PrintWriter(compareFile);
         PrintWriter pw = new PrintWriter(myFile);
 
         for (int i = 0; i < x.length(); i++){
             char z = x.charAt(i);
-            if (codes.letterCode.containsKey(z)){
-                pw.write(codes.letterCode.get(z));
+            if (z == ' '){
                 pw.write(" ");
             } 
+            if (codes.letterCode.containsKey(z)){
+                pw.write(codes.letterCode.get(z));
+                pw.write(",");
+            } 
+            pw2.write(z);
         }
+        pw2.close();
         pw.close();
 
         boolean flag = false;
         File myInFile = new File("HuffmanCodes.txt");
+        File myInFileCompare = new File("TextFile.txt");
+
+        long huffCodeFileLength = myInFile.length();
+        long textFileLength = myInFileCompare.length();
+        //Scanner inCompare = new Scanner(myInFileCompare);
         Scanner in = new Scanner(myInFile);
+
         String data = "";
 
         while (in.hasNextLine()){
@@ -82,7 +95,10 @@ public class App {
             int ans = Integer.parseInt(s); 
             switch(ans){
             case 1:
+                System.out.println("\nIf your sentence was saved as text to a text file the size would be:  " + Long.toString(huffCodeFileLength) + " Bytes.");
+                System.out.println("The size of the file when saved as the huffman codes is  " + Long.toString(textFileLength) + " Bytes.");
                 decode(codes, data);
+                System.out.println();
                 break;
             case 2: 
                 System.out.println("Encoded Text: " + data);
@@ -90,37 +106,44 @@ public class App {
             case 3: 
                 System.out.println("Original text: " + xCopy);
                 break;
+            case 4:
+                
+                break;
             default: 
                 System.out.println("Goodbye :)");
                 flag = true;
                 break;
             }
         }
-
+        System.out.println();
     }
+/*     public static void encodeAndWriteToFile(){
+
+    } */
+
     public static void decode(myGlobals codes, String data){
         boolean flag = false;
-        int kount = 0;
-        int n = data.length() - data.replaceAll(" ", "").length();
-        String[] codesInData = new String[n];
+        int n = data.length() - data.replaceAll(",", "").length();
         StringBuilder builder = new StringBuilder();
         
         for (int i = 0; i < data.length(); i++){
-            if(data.charAt(i) == ' '){
-                codesInData[kount] = builder.toString();
-                builder.delete(0, builder.length());
-                kount++;
-            }
-            else{
-                builder.append(data.charAt(i));
-            }
+            builder.append(data.charAt(i));
         }
+        String sentence = builder.toString();
+        String[] codesInData = sentence.split(",", n);
         int j = 0;
         while (flag == false){
             for (Map.Entry<Character, String> e : codes.letterCode.entrySet()){
-                if (j == codesInData.length){
+                if (j >= codesInData.length){
                     flag = true;
                     break;
+                }
+                if (codesInData[j].contains(",")){
+                    codesInData[j] = codesInData[j].replaceAll(",", "");
+                }
+                if (codesInData[j].contains(" ")){
+                    System.out.print(" ");
+                    codesInData[j] = codesInData[j].replaceAll(" ", "");
                 }
                 if ((e.getValue().compareTo(codesInData[j])) == 0){
                     String key = String.valueOf(e.getKey());
@@ -131,22 +154,23 @@ public class App {
         }
     }
 
-    public static String encodeInputPrompt(){
-        System.out.println("\nEnter a sentence: ");
-        String x = scanner.nextLine();
-
-        return x;
-    }
-
     public static String decodeInputPrompt(){
         System.out.println("\nPlease select an option");
         System.out.println("1. Decode the encoded text");
         System.out.println("2. Display the encoded text");
         System.out.println("3. Display original text");
-        System.out.println("4. Quit");
+        System.out.println("4. Enter a new sentence");
+        System.out.println("5. Quit");
         
         String s = scanner.nextLine();
         return s;
+    }
+
+    public static String encodeInputPrompt(){
+        System.out.println("\nEnter a sentence: ");
+        String x = scanner.nextLine();
+
+        return x;
     }
 
     public static void traverseTree(Node root, String s, myGlobals codes){
