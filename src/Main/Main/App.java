@@ -6,7 +6,7 @@ originally implemented using an array of node objects with a merge sort. Pivotte
 java built in priority q class. 
 */
 import java.util.*;
-import Classes.MergeSort;
+
 import Classes.Node;
 public class App {
     static Scanner scanner = new Scanner(System.in);
@@ -18,7 +18,6 @@ public class App {
 
         int n = x.length();
         Map<Character, Integer> freq = new HashMap<Character, Integer>();
-        PriorityQueue<Node> nodes = new PriorityQueue<Node>(freq.size(), new MyComparator());
         myGlobals codes = new myGlobals();
 
         for(int i = 0; i < n; i++){
@@ -28,7 +27,9 @@ public class App {
                 freq.put(x.charAt(i), 1);
             }
         }
-        
+
+        PriorityQueue<Node> nodes = new PriorityQueue<Node>(freq.size(), new MyComparator());
+
         for(Map.Entry<Character, Integer> e : freq.entrySet()){
             char letter = e.getKey();
             int frequency = e.getValue();
@@ -61,17 +62,16 @@ public class App {
             char z = x.charAt(i);
             if (codes.letterCode.containsKey(z)){
                 pw.write(codes.letterCode.get(z));
-               // pw.write(" ");
+                pw.write(" ");
             } 
         }
         pw.close();
 
         boolean flag = false;
-
         File myInFile = new File("HuffmanCodes.txt");
         Scanner in = new Scanner(myInFile);
-
         String data = "";
+
         while (in.hasNextLine()){
             data = in.nextLine();
         }
@@ -82,7 +82,7 @@ public class App {
             int ans = Integer.parseInt(s); 
             switch(ans){
             case 1:
-                
+                decode(codes, data);
                 break;
             case 2: 
                 System.out.println("Encoded Text: " + data);
@@ -97,6 +97,38 @@ public class App {
             }
         }
 
+    }
+    public static void decode(myGlobals codes, String data){
+        boolean flag = false;
+        int kount = 0;
+        int n = data.length() - data.replaceAll(" ", "").length();
+        String[] codesInData = new String[n];
+        StringBuilder builder = new StringBuilder();
+        
+        for (int i = 0; i < data.length(); i++){
+            if(data.charAt(i) == ' '){
+                codesInData[kount] = builder.toString();
+                builder.delete(0, builder.length());
+                kount++;
+            }
+            else{
+                builder.append(data.charAt(i));
+            }
+        }
+        int j = 0;
+        while (flag == false){
+            for (Map.Entry<Character, String> e : codes.letterCode.entrySet()){
+                if (j == codesInData.length){
+                    flag = true;
+                    break;
+                }
+                if ((e.getValue().compareTo(codesInData[j])) == 0){
+                    String key = String.valueOf(e.getKey());
+                    System.out.print(key.toLowerCase());
+                    j++;
+                }
+            }
+        }
     }
 
     public static String encodeInputPrompt(){
