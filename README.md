@@ -16,3 +16,9 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+
+
+## ************************************************************************************
+
+Allows the user to input any text. It then converts that text to a huffman coding tree and saves the huffman codes into a file.
+Reads the file back in a decodes the huffman codes to display the message that was input.
