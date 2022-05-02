@@ -2,15 +2,10 @@ package Main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-/*
-originally implemented using an array of node objects with a merge sort. Pivotted to a 
-java built in priority q class. 
-*/
+
 import java.util.*;
-
-import javax.lang.model.type.NullType;
-
 import Classes.Node;
+
 public class App {
 
     HashMap<Character, String> letterCode = new HashMap<Character, String>();
@@ -45,10 +40,10 @@ public class App {
                 System.out.println();
                 break;
             case 2: 
-                System.out.println("Encoded Text: " + data);
+                System.out.println("\nEncoded Text: " + data.replaceAll(",", ""));
                 break;
             case 3: 
-                System.out.println("Original text: " + xCopy);
+                System.out.println("\nOriginal text: " + xCopy);
                 break;
             case 4:
                 String newS = encodeInputPrompt();
@@ -155,6 +150,11 @@ public class App {
             builder.append(data.charAt(i));
         }
         String sentence = builder.toString();
+        String sentenceCopy = sentence.toString().replaceAll(",", "");
+        System.out.println("\nBelow is your text in the huffman codes.");
+        System.out.println(sentenceCopy);
+        System.out.println("\nBelow is the decoded huffman codes converted back to text.");
+
         String[] codesInData = sentence.split(",", n);
         int j = 0;
         while (flag == false){
