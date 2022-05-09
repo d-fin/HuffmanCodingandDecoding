@@ -11,10 +11,11 @@ public class App {
     HashMap<Character, String> letterCode = new HashMap<Character, String>();
     ArrayList<String> x = new ArrayList<String>();
     static Scanner scanner = new Scanner(System.in);
+    
     public static void main(String[] args) throws Exception {
         
         myGlobals codes = new myGlobals();
-
+        
         String x = encodeInputPrompt();
         String xCopy = x;
         
@@ -63,7 +64,7 @@ public class App {
         
         System.out.println();
     }
-
+    
     public static String readData(File myInFile) throws FileNotFoundException{
         Scanner in = new Scanner(myInFile);
         String data = "";
@@ -223,9 +224,11 @@ public class App {
         return arrCopy;
     }
 }
+
 class MyComparator implements Comparator<Node> {
     public int compare(Node x, Node y) { return x.getFrequency() - y.getFrequency(); }
 }
+
 class myGlobals {
     HashMap<Character, String> letterCode = new HashMap<Character, String>();
     ArrayList<String> x = new ArrayList<String>();
